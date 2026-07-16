@@ -19,9 +19,9 @@ sesion_activa = None
 #FUNCIONES
 def iniciar_sesion():
     print("\n --- INICIO DE SESIÓN ---")
-    usuario_ingresado = input("Ingrese su usuario: ")
-    contrasenia_ingresada = input("Ingrese su contraseña: ")
-    
+    usuario = input("Ingrese su usuario: ")
+    contrasenia = input("Ingrese su contraseña: ")
+
 
 #PROCEDIMEINTOS 
 def mostrar_menu():
