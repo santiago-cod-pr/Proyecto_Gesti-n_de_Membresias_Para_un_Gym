@@ -25,11 +25,15 @@ def iniciar_sesion():
 
 #PROCEDIMEINTOS 
 def mostrar_menu():
-    print("*** BIENVENIDO ***")
+    print("======================================")
+    print("=======       BIENVENIDO     =========")
+    print("======================================")
+    print("** Sistema de gestion de membresias **")
     print("\n--- Menú principal ---")
-    print("1. Registrar nueva cuenta")
-    print("2. Iniciar sesión")
-    print("3. Ver planes de membresía")
-    print("4. Eliminar cuenta")
-    print("5. salir")
-
+    print(f"{OPCION_NUEVA_CUENTA}. Registrar nueva cuenta")
+    print(f"{OPCION_INICIAR_SESION}. Iniciar sesión")
+    print(f"{OPCION_VER_PLANES}. Ver planes de membresía")
+    print(f"{OPCION_ELIMINAR_CUENTA}. Eliminar cuenta")
+    print(f"{OPCION_SALIR}. salir")
+    print("===================================")
+    print("\n ELIJA UNA OPCION PARA CONTINUAR.......")
