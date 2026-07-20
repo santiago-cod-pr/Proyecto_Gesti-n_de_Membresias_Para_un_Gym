@@ -5,7 +5,7 @@ OPCION_NUEVA_CUENTA = 1
 OPCION_INICIAR_SESION = 2
 OPCION_VER_PLANES = 3
 OPCION_ELIMINAR_CUENTA = 4
-OPC_VER_USUARIOS = 5
+OPCION_VER_USUARIOS = 5
 OPCION_SALIR = 6
 
 #CONSTANTES PARA LOS PRECIOS DE LOS PLANES
@@ -42,8 +42,8 @@ def iniciar_sesion():
             print("¡Bienvenido miembro especial! 👑")
 
             print(f"Resumen de cuenta -> Plan actual: {sesion_activa['plan']}")
-        else:
-            print("\nError usuario o contraseña incorrectos.")
+    else:
+        print("\nError usuario o contraseña incorrectos.")
 
         reintentar = input("¿Desea reintentar? (si/no): ").strip().upper()
         if reintentar == "si": 
@@ -62,7 +62,7 @@ def mostrar_menu():
     print(f"{OPCION_INICIAR_SESION}. Iniciar sesión")
     print(f"{OPCION_VER_PLANES}. Ver planes de membresía")
     print(f"{OPCION_ELIMINAR_CUENTA}. Eliminar cuenta")
-    print(f"{OPC_VER_USUARIOS}. Ver usuarios registrados")
+    print(f"{OPCION_VER_USUARIOS}. Ver usuarios registrados")
     print(f"{OPCION_SALIR}. salir")
     print("===================================")
     print("\n ELIJA UNA OPCION PARA CONTINUAR.......")
@@ -135,3 +135,58 @@ def eliminar_cuenta():
             print("\n OPERACION CANCELADA. LA CUENTA NO FUE ELIMINADA.")
     else:
         print("\n!!! ERROR: Inexistente o Datos Incorrectos")
+        # Punto para reintentar
+        reintentar = input("¿Desea reintentar? (SI/NO): ").strip().upper()
+        if reintentar == "SI":
+            eliminar_cuenta() # Se vuelve a llamar
+
+
+# Procedimiemto: Usuarios Registrados.
+
+def ver_usuarios_registrados():
+    print("\n====================================================================================")
+    print("=======                 REPORTE: USUARIOS REGISTRADOS                        =======")
+    print("====================================================================================")
+    
+    if not lista_usuarios:
+        print("No hay usuarios registrados en el sistema actualmente.")
+        print("====================================================================================")
+        return
+
+    print(f"{'Nombre':<25} | {'Edad':<4} | {'CURP':<12} | {'Teléfono':<11} | {'Usuario':<12} | {'Plan':<10}")
+    print("-" * 84)
+    for u in lista_usuarios:
+        print(f"{u['nombre']:<25} | {u['edad']:<4} | {u['curp']:<12} | {u['telefono']:<11} | {u['usuario']:<12} | {u['plan']:<10}")
+    print("====================================================================================")
+
+
+
+def ejecutar_menu():
+    while True:
+        mostrar_menu()  # Muestra las opciones visuales en pantalla
+        
+        try:
+            opcion = int(input("-> Opción: "))
+            
+            if opcion == OPCION_NUEVA_CUENTA:
+                registrar_usuario()
+            elif opcion == OPCION_INICIAR_SESION:
+                iniciar_sesion()
+            elif opcion == OPCION_VER_PLANES:
+                mostrar_planes()
+            elif opcion == OPCION_ELIMINAR_CUENTA:
+                eliminar_cuenta()
+            elif opcion == OPCION_VER_USUARIOS:
+                ver_usuarios_registrados()
+            elif opcion == OPCION_SALIR:
+                print("\n¡Gracias por usar nuestro sistema! Hasta luego. 💪")
+                break  # Rompe el ciclo 'while True' de forma segura
+            else:
+                print("\nOpción inválida. Intente de nuevo.")
+                
+        except ValueError:
+            print("\nError: Por favor, ingrese un número válido (caracteres no permitidos).")
+
+
+# INICIALIZACIÓN DE ARRANQUE 
+ejecutar_menu()
