@@ -5,7 +5,8 @@ OPCION_NUEVA_CUENTA = 1
 OPCION_INICIAR_SESION = 2
 OPCION_VER_PLANES = 3
 OPCION_ELIMINAR_CUENTA = 4
-OPCION_SALIR = 5
+OPC_VER_USUARIOS = 5
+OPCION_SALIR = 6
 
 #CONSTANTES PARA LOS PRECIOS DE LOS PLANES
 PLAN_BASICO = 800
@@ -61,6 +62,7 @@ def mostrar_menu():
     print(f"{OPCION_INICIAR_SESION}. Iniciar sesión")
     print(f"{OPCION_VER_PLANES}. Ver planes de membresía")
     print(f"{OPCION_ELIMINAR_CUENTA}. Eliminar cuenta")
+    print(f"{OPC_VER_USUARIOS}. Ver usuarios registrados")
     print(f"{OPCION_SALIR}. salir")
     print("===================================")
     print("\n ELIJA UNA OPCION PARA CONTINUAR.......")
@@ -110,3 +112,26 @@ def mostrar_planes():
     print("| 2. Plan VIP ->  $4,500.00 MXN / 1 año                                                                       |")
     print("| INCLUYE: Acceso total VIP, plan de nutricion, playera oficial del gym y pase para un invitado gratis al mes |")
     print("===============================================================================================================")
+
+
+
+#Procedimiento Para eliminar cuenta
+def eliminar_cuenta():
+    print("==================================================")
+    print("======          ELIMINAR CUENTA          =========")
+    print("==================================================")
+    
+    usuario = input("Ingrese su Usuario: ")
+    contrasenia = input("Ingrese su contraseña: ")
+
+    usuario_encontrado = buscar_usuario(usuario, contrasenia)
+
+    if usuario_encontrado is not None:
+        confirmacion = input(f"Seguro que desea eliminar la cuenta de {usuario_encontrado['nombre']}? (SI/NO: )").strip().upper()
+        if confirmacion == "SI":
+            lista_usuarios.remove(usuario_encontrado)
+            print("!! CUENTA ELIMINADA CON EXITO !!")
+        else:
+            print("\n OPERACION CANCELADA. LA CUENTA NO FUE ELIMINADA.")
+    else:
+        print("\n!!! ERROR: Inexistente o Datos Incorrectos")
