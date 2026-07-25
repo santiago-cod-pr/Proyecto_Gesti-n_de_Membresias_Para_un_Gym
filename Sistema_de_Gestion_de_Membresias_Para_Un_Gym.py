@@ -16,6 +16,7 @@ PLAN_BLACK_VIP = 4500
 
 lista_usuarios = []
 sesion_activa = None
+lista_tarjetas = []
 
 #FUNCIONES
 #Busca al usuario en la lista global. retorna el usuario si todo coincide, si no, retorna None.
@@ -26,6 +27,7 @@ def buscar_usuario(usuario_ingresado, contrasenia_ingresada):
     return None
 
 def mostrar_planes():
+    global sesion_activa, lista_tarjetas #<---
     print("\n===============================================================================================================")
     print("|                                     CATÁLOGO DE PLANES                                                      |")
     print("===============================================================================================================")
@@ -38,7 +40,7 @@ def mostrar_planes():
     print("| 3. Plan Premium  ->  $2,500.00 MXN / 6 meses                                                                |")
     print("| INCLUYE: Todo lo anterior + rutina estructurada + asesoría de entrenamiento personalizado                   |")
     print("|                                                                                                             |")
-    print("| 2. Plan VIP ->  $4,500.00 MXN / 1 año                                                                       |")
+    print("| 4. Plan VIP ->  $4,500.00 MXN / 1 año                                                                       |")
     print("| INCLUYE: Acceso total VIP, plan de nutricion, playera oficial del gym y pase para un invitado gratis al mes |")
     print("===============================================================================================================")
     #leer plan seleccionado 
@@ -47,21 +49,31 @@ def mostrar_planes():
     #verificar si hay alguien con sesion activa
     if sesion_activa is None:
         print("\nPara contratar un plan debes ingresar a tu cuenta.")
-        login_exitoso = iniciar_sesion()
+        tiene_cuenta = input(" Ya Tienes una Cuenta Creada? (Si / No): ")
 
-        #si la persona no tiene una cuenta
-        if not login_exitoso:
-            print("\nNo se pudo verificar tu cuenta.")
-            crear = input("¿Desea crear una cuenta nueva? (si/no): ")
-            if crear == "si":
-                registrar_usuario()
-            return #corta el proceso para que no se pueda pagar sin cuenta
+        if tiene_cuenta == "si":
+            login_exitoso = iniciar_sesion()
+            if not login_exitoso:
+                print("** No se pudo verificar Su Cuenta **")
+                return
+        else:
+            print("\n --- REGISTRO DE NUEVO USUARIO ---")
+            registrar_usuario()
 
     #datos de pago 
     print("\n--- Datos de pago ---")
     tarjeta = input("Ingrese numero de tarjeta: ")
     cvv = input("Ingrese CVV: ")
     fecha = input("Ingrese fecha de vencimiento (MM/AA): ")
+
+
+    #Guardar datos de la tarjeta en la lista
+    datos_tarjeta = {
+        "tarjeta" : tarjeta,
+        "cvv": cvv,
+        "fecha": fecha
+    }
+    lista_tarjetas.append(datos_tarjeta)
 
     #Guardar el plan contratado en el usuario
     if plan_opcion == "1":
@@ -103,7 +115,9 @@ def iniciar_sesion():
 
 
 
-#PROCEDIMEINTOS 
+#// PROCEDIMIENTOS //
+
+#procedimiento para mostrar menu
 def mostrar_menu():
     print("======================================")
     print("=======       BIENVENIDO     =========")
@@ -119,16 +133,34 @@ def mostrar_menu():
     print("===================================")
     print("\n ELIJA UNA OPCION PARA CONTINUAR.......")
 
+
+#Procedimiento para registrar un usuario
 def registrar_usuario():
+    global sesion_activa #<--
     print("======================================")
     print("====== Registro de nueva cuenta ======")
     print("======================================")
     nombre = input("Ingrese su nombre completo: ")
-    edad = input("Ingrese su edad: ")
+    edad = int(input("Ingrese su edad: "))
+    if edad < 18:                           # <---- Validacion en caso de que ingrese una edad menor a 18 años (Mayor de edad)
+        print("\n !!* ERROR: El Registro es Unicamente Para Mayores de Edad *!! ") 
+        return
     curp = input("Ingrese su CURP: ").upper()
     telefono = input("Ingrese su telefono: ")
 
-    usuario = input("Defina su nombre de usuario: ")
+    while True:
+        usuario = input("Defina su nombre de usuario: ")
+        existe = False
+        for u in lista_usuarios:
+            if u["usuario"] == usuario:
+                existe = True
+            break
+
+        if existe:  
+            print("\n!! ESTE USUARIO YA EXISTE, Cree un nuevo usuario !!")
+        else:
+            break
+    
     contrasenia = input("Defina su contraseña: ")
 
 #Crea el diccionario del nuevo usuario con plan por defecto
@@ -143,7 +175,9 @@ def registrar_usuario():
     }
 
 #Añadir usuario a la lista y guardar
+    sesion_activa
     lista_usuarios.append(nuevo_usuario)
+    sesion_activa = nuevo_usuario #<---
     print("\n¡Usuario registrado con exito en el sistema!" )
     print("Regresando al menú principal...")
 
@@ -228,7 +262,7 @@ def ejecutar_menu():
                 print("\n¡Gracias por usar nuestro sistema! Hasta luego. 💪")
                 break  # Rompe el ciclo 'while True' de forma segura
             else:
-                print("\nOpción inválida. Intente de nuevo.")
+                print("\n!!! Opción inválida. Intente de nuevo. !!!")
                 
         except ValueError:
             print("\nError: Por favor, ingrese un número válido (caracteres no permitidos).")
