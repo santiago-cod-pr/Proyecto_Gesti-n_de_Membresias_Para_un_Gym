@@ -24,7 +24,57 @@ def buscar_usuario(usuario_ingresado, contrasenia_ingresada):
         if i["usuario"] == usuario_ingresado and i["contrasenia"] == contrasenia_ingresada:
             return i
     return None
-    
+
+def mostrar_planes():
+    print("\n===============================================================================================================")
+    print("|                                     CATÁLOGO DE PLANES                                                      |")
+    print("===============================================================================================================")
+    print("| 1. Plan Basico  ->  $800.00 MXN / mes                                                                       |")
+    print("| INCLUYE: Acceso ilimitado al área de pesas y cardio                                                         |")
+    print("|                                                                                                             |")
+    print("| 2. Plan Economico ->  $1,000.00 MXN / 2 meses                                                               |")
+    print("| INCLUYE: acceso ilimitado a maquinas y uso de regaderas                                                     |")
+    print("|                                                                                                             |")
+    print("| 3. Plan Premium  ->  $2,500.00 MXN / 6 meses                                                                |")
+    print("| INCLUYE: Todo lo anterior + rutina estructurada + asesoría de entrenamiento personalizado                   |")
+    print("|                                                                                                             |")
+    print("| 2. Plan VIP ->  $4,500.00 MXN / 1 año                                                                       |")
+    print("| INCLUYE: Acceso total VIP, plan de nutricion, playera oficial del gym y pase para un invitado gratis al mes |")
+    print("===============================================================================================================")
+    #leer plan seleccionado 
+    plan_opcion = input ("\nSeleccione el plan que desea adquirir (1-4): ")
+
+    #verificar si hay alguien con sesion activa
+    if sesion_activa is None:
+        print("\nPara contratar un plan debes ingresar a tu cuenta.")
+        login_exitoso = iniciar_sesion()
+
+        #si la persona no tiene una cuenta
+        if not login_exitoso:
+            print("\nNo se pudo verificar tu cuenta.")
+            crear = input("¿Desea crear una cuenta nueva? (si/no): ")
+            if crear == "si":
+                registrar_usuario()
+            return #corta el proceso para que no se pueda pagar sin cuenta
+
+    #datos de pago 
+    print("\n--- Datos de pago ---")
+    tarjeta = input("Ingrese numero de tarjeta: ")
+    cvv = input("Ingrese CVV: ")
+    fecha = input("Ingrese fecha de vencimiento (MM/AA): ")
+
+    #Guardar el plan contratado en el usuario
+    if plan_opcion == "1":
+        sesion_activa["plan"] = "Basico"
+    elif plan_opcion == "2":
+            sesion_activa["plan"] = "Economico"
+    elif plan_opcion == "3":
+            sesion_activa["plan"] = "Premium"
+    elif plan_opcion == "4":
+            sesion_activa["plan"] = "VIP"
+
+    imprimir_ticket()
+
 
 def iniciar_sesion():
     global sesion_activa
@@ -33,21 +83,23 @@ def iniciar_sesion():
     contrasenia = input("Ingrese su contraseña: ")
 
     usuario_encontrado = buscar_usuario(usuario, contrasenia)
-
+    
     if usuario_encontrado is not None:
         sesion_activa = usuario_encontrado
         print(f"\n¡Inicio de sesión exitoso! Bienvenido {sesion_activa['nombre']}.")
-
+        #Evalua si es miembro especial
         if sesion_activa["plan"] in ["Premium", "VIP"]:
             print("¡Bienvenido miembro especial! 👑")
 
-            print(f"Resumen de cuenta -> Plan actual: {sesion_activa['plan']}")
+        print(f"Resumen de cuenta -> Plan actual: {sesion_activa['plan']}")
+        return True
     else:
         print("\nError usuario o contraseña incorrectos.")
 
-        reintentar = input("¿Desea reintentar? (si/no): ").strip().upper()
+        reintentar = input("¿Desea reintentar? (si/no): ")
         if reintentar == "si": 
-            iniciar_sesion() #Vuelve a llamarse a sí misma para reintentar
+            return iniciar_sesion() #Vuelve a llamarse a sí misma para reintentar
+        return False
 
 
 
@@ -96,24 +148,6 @@ def registrar_usuario():
     print("Regresando al menú principal...")
 
 
-def mostrar_planes():
-    print("\n===============================================================================================================")
-    print("|                                     CATÁLOGO DE PLANES                                                      |")
-    print("===============================================================================================================")
-    print("| 1. Plan Basico  ->  $800.00 MXN / mes                                                                       |")
-    print("| INCLUYE: Acceso ilimitado al área de pesas y cardio                                                         |")
-    print("|                                                                                                             |")
-    print("| 2. Plan Economico ->  $1,000.00 MXN / 2 meses                                                               |")
-    print("| INCLUYE: acceso ilimitado a maquinas y uso de regaderas                                                     |")
-    print("|                                                                                                             |")
-    print("| 3. Plan Premium  ->  $2,500.00 MXN / 6 meses                                                                |")
-    print("| INCLUYE: Todo lo anterior + rutina estructurada + asesoría de entrenamiento personalizado                   |")
-    print("|                                                                                                             |")
-    print("| 2. Plan VIP ->  $4,500.00 MXN / 1 año                                                                       |")
-    print("| INCLUYE: Acceso total VIP, plan de nutricion, playera oficial del gym y pase para un invitado gratis al mes |")
-    print("===============================================================================================================")
-
-
 
 #Procedimiento Para eliminar cuenta
 def eliminar_cuenta():
@@ -158,6 +192,18 @@ def ver_usuarios_registrados():
     for u in lista_usuarios:
         print(f"{u['nombre']:<25} | {u['edad']:<4} | {u['curp']:<12} | {u['telefono']:<11} | {u['usuario']:<12} | {u['plan']:<10}")
     print("====================================================================================")
+
+# Procedimiento para imprimir ticket
+def imprimir_ticket():
+    global sesion_activa
+    print("\n=================================")
+    print("        TICKET DE COMPRA         ")
+    print("=================================")
+    print(f"Cliente: {sesion_activa['nombre']}")
+    print(f"CURP: {sesion_activa['curp']}")
+    print(f"Plan contratado: {sesion_activa['plan']}")
+    print("Estado del pago: APROBADO EXITOSAMENTE")
+    print("=================================\n")
 
 
 
