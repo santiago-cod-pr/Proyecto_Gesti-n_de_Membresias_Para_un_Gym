@@ -14,6 +14,7 @@ PLAN_ECONOMICO = 1000
 PLAN_PREMIUM = 2500
 PLAN_BLACK_VIP = 4500
 
+#Listas
 lista_usuarios = []
 sesion_activa = None
 lista_tarjetas = []
@@ -43,8 +44,18 @@ def mostrar_planes():
     print("| 4. Plan VIP ->  $4,500.00 MXN / 1 año                                                                       |")
     print("| INCLUYE: Acceso total VIP, plan de nutricion, playera oficial del gym y pase para un invitado gratis al mes |")
     print("===============================================================================================================")
-    #leer plan seleccionado 
-    plan_opcion = input ("\nSeleccione el plan que desea adquirir (1-4): ")
+
+    #leer plan seleccionado
+    while True: # // ciclo para validar opciones del 1 al 4 //
+        try:
+            plan_opcion = int(input("\nSeleccione el plan que desea adquirir (1-4): "))
+            if plan_opcion in [1,2,3,4]:
+                break
+            else:
+                print("\n!!! ERROR: opcion fuera de rango, seleccione una opcion del 1 al 4 !!!")
+        except ValueError:
+            print("\n!!! ERROR: Ingrese un numero Valido !!!\n")
+
 
     #verificar si hay alguien con sesion activa
     if sesion_activa is None:
@@ -62,8 +73,19 @@ def mostrar_planes():
 
     #datos de pago 
     print("\n--- Datos de pago ---")
-    tarjeta = input("Ingrese numero de tarjeta: ")
-    cvv = input("Ingrese CVV: ")
+
+    while True:
+        tarjeta = input("Ingrese numero de tarjeta: ")
+        if len(tarjeta) == 15 or len(tarjeta) == 16: # Si la tarjeta tiene 15 o 16 caracteres se acepta
+            break
+        print("\n!!! ERROR: la tajeta debe contener 15 o 16 digitos !!!")
+
+    while True:
+     cvv = input("Ingrese CVV: ")
+     if len(cvv) == 3 or len(cvv) == 4: # Si el CVV tiene 3 o 4 caracteres se acepta
+         break
+     print("\n!!! ERROR: El CVV debe contener 3 o 4 digitos")
+
     fecha = input("Ingrese fecha de vencimiento (MM/AA): ")
 
 
@@ -76,13 +98,13 @@ def mostrar_planes():
     lista_tarjetas.append(datos_tarjeta)
 
     #Guardar el plan contratado en el usuario
-    if plan_opcion == "1":
+    if plan_opcion == 1:
         sesion_activa["plan"] = "Basico"
-    elif plan_opcion == "2":
+    elif plan_opcion == 2:
             sesion_activa["plan"] = "Economico"
-    elif plan_opcion == "3":
+    elif plan_opcion == 3:
             sesion_activa["plan"] = "Premium"
-    elif plan_opcion == "4":
+    elif plan_opcion == 4:
             sesion_activa["plan"] = "VIP"
 
     imprimir_ticket()
@@ -119,7 +141,7 @@ def iniciar_sesion():
 
 #procedimiento para mostrar menu
 def mostrar_menu():
-    print("======================================")
+    print("\n======================================")
     print("=======       BIENVENIDO     =========")
     print("======================================")
     print("** Sistema de gestion de membresias **")
@@ -136,17 +158,37 @@ def mostrar_menu():
 
 #Procedimiento para registrar un usuario
 def registrar_usuario():
-    global sesion_activa #<--
+    #Se agrega 'global sesion_activa', ya que al registrar a la persona necesitamos asignar su cuenta directamente como la sesion
+    #iniciada en todo el sistema y pueda seguir con las funciones del programa.
+    #Sin esta, la sesion se cierra al terminar la funcion.
+    global sesion_activa #<------
     print("======================================")
     print("====== Registro de nueva cuenta ======")
     print("======================================")
     nombre = input("Ingrese su nombre completo: ")
-    edad = int(input("Ingrese su edad: "))
-    if edad < 18:                           # <---- Validacion en caso de que ingrese una edad menor a 18 años (Mayor de edad)
+
+    while True:
+        try:
+          edad = int(input("Ingrese su edad: "))
+          break
+        except ValueError:  #Si el usuario ingresa otro caracter que no sea un numero entero
+            print("\n!!! ERROR: Ingrese un numero valido !!!")
+
+    if edad < 18:   # <---- Validacion en caso de que ingrese una edad menor a 18 años (Mayor de edad)
         print("\n !!* ERROR: El Registro es Unicamente Para Mayores de Edad *!! ") 
         return
-    curp = input("Ingrese su CURP: ").upper()
-    telefono = input("Ingrese su telefono: ")
+
+    while True: # Ciclo de validacion de 18 caracteres de la CURP
+        curp = input("Ingrese su CURP: ").upper()
+        if len(curp) == 18: #Validacion de los 18 Caracteres
+            break
+        print("\n!!! ERROR: La CURP debe contener 18 Caracteres !!!")
+
+    while True:
+        telefono = input("Ingrese su telefono: ")
+        if len(telefono) == 10:
+            break
+        print("!!! ERROR: Debe ingresar los 10 digitos del numero telefonico !!!")
 
     while True:
         usuario = input("Defina su nombre de usuario: ")
@@ -175,11 +217,10 @@ def registrar_usuario():
     }
 
 #Añadir usuario a la lista y guardar
-    sesion_activa
     lista_usuarios.append(nuevo_usuario)
-    sesion_activa = nuevo_usuario #<---
+    sesion_activa = nuevo_usuario #<--- Guarda la cuenta Creada (nuevo_usuario), en la variable de Sesion Activa.
     print("\n¡Usuario registrado con exito en el sistema!" )
-    print("Regresando al menú principal...")
+    print("Regresando al menú principal....")
 
 
 
@@ -202,7 +243,7 @@ def eliminar_cuenta():
         else:
             print("\n OPERACION CANCELADA. LA CUENTA NO FUE ELIMINADA.")
     else:
-        print("\n!!! ERROR: Inexistente o Datos Incorrectos")
+        print("\n!!! ERROR: Inexistente o Datos Incorrectos !!!")
         # Punto para reintentar
         reintentar = input("¿Desea reintentar? (SI/NO): ").strip().upper()
         if reintentar == "SI":
@@ -212,20 +253,20 @@ def eliminar_cuenta():
 # Procedimiemto: Usuarios Registrados.
 
 def ver_usuarios_registrados():
-    print("\n====================================================================================")
-    print("=======                 REPORTE: USUARIOS REGISTRADOS                        =======")
-    print("====================================================================================")
+    print("\n===================================================================================================")
+    print("=========                 REPORTE: USUARIOS REGISTRADOS                                   ========")
+    print("===================================================================================================")
     
     if not lista_usuarios:
         print("No hay usuarios registrados en el sistema actualmente.")
-        print("====================================================================================")
+        print("===================================================================================================")
         return
 
     print(f"{'Nombre':<25} | {'Edad':<4} | {'CURP':<12} | {'Teléfono':<11} | {'Usuario':<12} | {'Plan':<10}")
-    print("-" * 84)
+    print("-" * 100)
     for u in lista_usuarios:
         print(f"{u['nombre']:<25} | {u['edad']:<4} | {u['curp']:<12} | {u['telefono']:<11} | {u['usuario']:<12} | {u['plan']:<10}")
-    print("====================================================================================")
+    print("===================================================================================================")
 
 # Procedimiento para imprimir ticket
 def imprimir_ticket():
@@ -233,10 +274,10 @@ def imprimir_ticket():
     print("\n=================================")
     print("        TICKET DE COMPRA         ")
     print("=================================")
-    print(f"Cliente: {sesion_activa['nombre']}")
-    print(f"CURP: {sesion_activa['curp']}")
-    print(f"Plan contratado: {sesion_activa['plan']}")
-    print("Estado del pago: APROBADO EXITOSAMENTE")
+    print(f"= Cliente: {sesion_activa['nombre']}")
+    print(f"= CURP: {sesion_activa['curp']}")
+    print(f"= Plan contratado: {sesion_activa['plan']}")
+    print("= Estado del pago: APROBADO EXITOSAMENTE")
     print("=================================\n")
 
 
