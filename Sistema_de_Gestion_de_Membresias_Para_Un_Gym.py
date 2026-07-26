@@ -1,5 +1,8 @@
 # Equipo 6 - SISTEMA DE GESTION DE MEMBRESIAS PARA UN GYM.
 
+import csv  #Modulo para leer y escribir archivos CSV facilmente
+import os   #Modulo para interactuar con el sistema de archivos (verificar si existe)
+
 #CONSTANTES PARA LAS OPCIONES DEL MENÚ
 OPCION_NUEVA_CUENTA = 1
 OPCION_INICIAR_SESION = 2
@@ -14,12 +17,61 @@ PLAN_ECONOMICO = 1000
 PLAN_PREMIUM = 2500
 PLAN_BLACK_VIP = 4500
 
+# CONFIGURACIÓN DE ARCHIVOS CSV <--- AGREGADO PARA MANEJO DE CSV
+ARCHIVO_USUARIOS = "usuarios.csv"
+CAMPOS_CSV = ["nombre", "edad", "curp", "telefono", "usuario", "contrasenia", "plan"]
+
 #Listas
 lista_usuarios = []
 sesion_activa = None
 lista_tarjetas = []
 
-#FUNCIONES
+#// FUNCIONES  //
+
+def cargar_usuarios():
+    """Carga los usuarios desde el archivo CSV si existe."""
+    #Convierte el CVS en una lista de diccionarios al arrancar el programa
+    if not os.path.exists(ARCHIVO_USUARIOS):
+        return []
+    
+    usuarios = []
+    try:
+        with open(ARCHIVO_USUARIOS, "r", encoding="utf-8") as f:
+            lector = csv.DictReader(f)
+            for fila in lector:
+                usuarios.append({
+                    "nombre": fila["nombre"],
+                    "edad": int(fila["edad"]),
+                    "curp": fila["curp"],
+                    "telefono": fila["telefono"],
+                    "usuario": fila["usuario"],
+                    "contrasenia": fila["contrasenia"],
+                    "plan": fila["plan"]
+                })
+    except Exception as e:
+        print(f"\nError al cargar usuarios desde el CSV: {e}")
+    return usuarios
+
+def guardar_usuarios():
+    """Guarda la lista global de usuarios en el archivo CSV."""
+    try:
+        with open(ARCHIVO_USUARIOS, "w", newline="", encoding="utf-8") as f:
+            escritor = csv.writer(f)
+            escritor.writerow(CAMPOS_CSV)  # Escribe los encabezados
+            for u in lista_usuarios:
+                escritor.writerow([
+                    u["nombre"],
+                    u["edad"],
+                    u["curp"],
+                    u["telefono"],
+                    u["usuario"],
+                    u["contrasenia"],
+                    u["plan"]
+                ])
+    except Exception as e:
+        print(f"\nError al guardar datos en el CSV: {e}")
+
+
 #Busca al usuario en la lista global. retorna el usuario si todo coincide, si no, retorna None.
 def buscar_usuario(usuario_ingresado, contrasenia_ingresada):
     for i in lista_usuarios: 
@@ -106,6 +158,8 @@ def mostrar_planes():
             sesion_activa["plan"] = "Premium"
     elif plan_opcion == 4:
             sesion_activa["plan"] = "VIP"
+
+    guardar_usuarios()        
 
     imprimir_ticket()
 
@@ -219,6 +273,9 @@ def registrar_usuario():
 #Añadir usuario a la lista y guardar
     lista_usuarios.append(nuevo_usuario)
     sesion_activa = nuevo_usuario #<--- Guarda la cuenta Creada (nuevo_usuario), en la variable de Sesion Activa.
+
+    guardar_usuarios()
+
     print("\n¡Usuario registrado con exito en el sistema!" )
     print("Regresando al menú principal....")
 
@@ -239,6 +296,9 @@ def eliminar_cuenta():
         confirmacion = input(f"Seguro que desea eliminar la cuenta de {usuario_encontrado['nombre']}? (SI/NO: )").strip().upper()
         if confirmacion == "SI":
             lista_usuarios.remove(usuario_encontrado)
+
+            guardar_usuarios()
+            
             print("!! CUENTA ELIMINADA CON EXITO !!")
         else:
             print("\n OPERACION CANCELADA. LA CUENTA NO FUE ELIMINADA.")
@@ -310,4 +370,5 @@ def ejecutar_menu():
 
 
 # INICIALIZACIÓN DE ARRANQUE 
+lista_usuarios = cargar_usuarios()  # <--- AGREGADO PARA CARGAR USUARIOS EXISTENTES AL INICIAR
 ejecutar_menu()
