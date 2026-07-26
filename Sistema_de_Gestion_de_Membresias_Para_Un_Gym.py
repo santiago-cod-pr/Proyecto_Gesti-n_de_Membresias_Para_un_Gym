@@ -19,12 +19,11 @@ PLAN_BLACK_VIP = 4500
 
 # CONFIGURACIÓN DE ARCHIVOS CSV <--- AGREGADO PARA MANEJO DE CSV
 ARCHIVO_USUARIOS = "usuarios.csv"
-CAMPOS_CSV = ["nombre", "edad", "curp", "telefono", "usuario", "contrasenia", "plan"]
+CAMPOS_CSV = ["nombre", "edad", "curp", "telefono", "usuario", "contrasenia", "plan", "tarjeta"]
 
 #Listas
 lista_usuarios = []
 sesion_activa = None
-lista_tarjetas = []
 
 #// FUNCIONES  //
 
@@ -46,7 +45,8 @@ def cargar_usuarios():
                     "telefono": fila["telefono"],
                     "usuario": fila["usuario"],
                     "contrasenia": fila["contrasenia"],
-                    "plan": fila["plan"]
+                    "plan": fila["plan"],
+                    "tarjeta": fila.get("tarjeta", "Sin registrar")
                 })
     except Exception as e:
         print(f"\nError al cargar usuarios desde el CSV: {e}")
@@ -66,7 +66,8 @@ def guardar_usuarios():
                     u["telefono"],
                     u["usuario"],
                     u["contrasenia"],
-                    u["plan"]
+                    u["plan"],
+                    u.get("tarjeta", "Sin registrar")
                 ])
     except Exception as e:
         print(f"\nError al guardar datos en el CSV: {e}")
@@ -140,15 +141,6 @@ def mostrar_planes():
 
     fecha = input("Ingrese fecha de vencimiento (MM/AA): ")
 
-
-    #Guardar datos de la tarjeta en la lista
-    datos_tarjeta = {
-        "tarjeta" : tarjeta,
-        "cvv": cvv,
-        "fecha": fecha
-    }
-    lista_tarjetas.append(datos_tarjeta)
-
     #Guardar el plan contratado en el usuario
     if plan_opcion == 1:
         sesion_activa["plan"] = "Basico"
@@ -159,6 +151,7 @@ def mostrar_planes():
     elif plan_opcion == 4:
             sesion_activa["plan"] = "VIP"
 
+    sesion_activa["tarjeta"] = tarjeta
     guardar_usuarios()        
 
     imprimir_ticket()
@@ -267,7 +260,8 @@ def registrar_usuario():
         "telefono": telefono,
         "usuario": usuario,
         "contrasenia": contrasenia,
-        "plan": "Ninguno"
+        "plan": "Ninguno",
+        "tarjeta": "Sin registrar"
     }
 
 #Añadir usuario a la lista y guardar
