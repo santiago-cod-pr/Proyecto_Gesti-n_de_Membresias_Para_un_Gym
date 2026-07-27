@@ -17,11 +17,11 @@ Guarde el archivo con el código fuente
 
 Abrir la consola 
 
-Iniciar comando de ejecucion
+Iniciar comando de ejecucion.
+
 
 Descripción Breve de las Funciones del Código: 
 
- 
 
 cargar_usuarios(): Esta función verifica si existe el archivo local "usuarios.csv" en el sistema. En caso de encontrarlo, lee y procesa cada fila del archivo para transformar la información guardada en una lista global de diccionarios al iniciar el programa; si no existe, retorna una lista vacía de forma segura. 
 
@@ -32,6 +32,9 @@ buscar_usuario(usuario_ingresado, contrasenia_ingresada): Esta función recorre 
 mostrar_planes(): Esta función despliega en pantalla el catálogo visual de las membresías disponibles con sus precios y beneficios detallados. Valida la selección del plan (1 al 4), gestiona la autenticación obligatoria antes de la compra, solicita y valida los datos bancarios de pago y actualiza la membresía contratada en el perfil del usuario activo antes de generar su ticket. 
 
 iniciar_sesion(): Esta función solicita las credenciales al usuario e invoca a buscar_usuario para validar el acceso al sistema. Si la autenticación es exitosa, establece la sesión activa, muestra un mensaje personalizado con distinción para miembros especiales (planes Premium o VIP) y retorna True; en caso de error, ofrece una opción recursiva para reintentar e informa del fallo devolviendo False. 
+
+
+Descripción Breve de los Procedimientos del Código:
 
 mostrar_menu(): Este procedimiento imprime en consola la interfaz visual del menú principal con un encabezado decorativo y la lista numerada de opciones disponibles. Utiliza las constantes definidas en el programa para presentar un menú claro, limpio y estructurado que guía al usuario durante toda la interacción. 
 
@@ -44,4 +47,6 @@ ver_usuarios_registrados(): Este procedimiento genera un reporte impreso formate
 imprimir_ticket(): Este procedimiento emite un comprobante formal de la transacción en formato de recibo tras la contratación exitosa de una membresía. Recupera la información de la sesión activa para mostrar en pantalla el nombre del cliente, su CURP, el plan adquirido y la confirmación del pago aprobado. 
 
 ejecutar_menu(): Esta función actúa como el bucle ejecutor y controlador principal del ciclo de vida del programa. Muestra continuamente el menú, captura la opción seleccionada por el usuario, maneja excepciones de entrada para evitar fallos inesperados y redirige el flujo de ejecución hacia la función o procedimiento correspondiente hasta seleccionar la opción de salir. 
+
+
 
